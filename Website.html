@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake Alert System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes frame-shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-10px);
+      }
+      50% {
+        transform: translateX(10px);
+      }
+      75% {
+        transform: translateX(-5px);
+      }
+    }
+
+    .shake {
+      animation: frame-shake 0.5s infinite;
+    }
+
+    #earthquake-icon {
+      animation: shake 0.5s infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-5px);
+      }
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    #alert {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 text-gray-900 min-h-screen flex flex-col items-center justify-center px-4">
+  <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-6 text-blue-800">
+    🌍 Earthquake Alert System
+  </h1>
+
+  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md text-center">
+    <label for="city" class="block text-lg md:text-xl font-medium mb-4 text-gray-700">
+      Select Your City:
+    </label>
+    <select id="city" class="w-full border rounded-lg p-2 text-lg">
+      <option value="Gaza">Gaza</option>
+      <option value="Ramallah">Ramallah</option>
+      <option value="Nablus">Nablus</option>
+      <option value="Hebron">Hebron</option>
+    </select>
+  </div>
+
+  <div id="alert" class="mt-6 bg-red-500 text-white p-4 rounded-lg shadow-lg w-full max-w-md text-center">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">⚠️ Earthquake Alert!</h2>
+    <p id="alert-details" class="text-lg"></p>
+    <div id="earthquake-icon" class="text-4xl mt-4">🌍</div>
+  </div>
+
+  <div id="safe-places" class="mt-6 bg-green-500 text-white p-4 rounded-lg shadow-lg w-full max-w-md text-center">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">✅ Safest Places:</h2>
+    <ul id="safe-list" class="text-lg list-disc list-inside"></ul>
+  </div>
+
+  <!-- Audio element for the alert sound -->
+  <audio id="alert-sound" src="../alert.mp3"></audio>
+
+  <script>
+    // Earthquake scenarios for different cities
+    const scenarios = {
+      Gaza: { intensity: '5.3', safePlaces: ['Beach Area', 'Open Parks'] },
+      Ramallah: { intensity: '6.1', safePlaces: ['City Center Square', 'Wadi Park'] },
+      Nablus: { intensity: '4.8', safePlaces: ['Old City', 'East Neighborhood'] },
+      Hebron: { intensity: '6.5', safePlaces: ['Mountain View', 'University Grounds'] },
+    };
+
+    // Function to simulate an earthquake
+    function simulateEarthquake() {
+      const city = document.getElementById('city').value;
+      const data = scenarios[city];
+
+      // Show alert
+      const alertDiv = document.getElementById('alert');
+      const alertDetails = document.getElementById('alert-details');
+      alertDetails.textContent = `Earthquake detected in ${city} with intensity ${data.intensity}.`;
+      alertDiv.style.display = 'block';
+
+      // Play alert sound
+      const alertSound = document.getElementById('alert-sound');
+      alertSound.play();
+
+      // Show safe places
+      const safePlacesDiv = document.getElementById('safe-places');
+      const safeList = document.getElementById('safe-list');
+      safeList.innerHTML = '';
+      data.safePlaces.forEach(place => {
+        const li = document.createElement('li');
+        li.textContent = place;
+        safeList.appendChild(li);
+      });
+      safePlacesDiv.style.display = 'block';
+
+      // Add frame shake effect
+      document.body.classList.add('shake');
+
+      // Stop shaking after 5 seconds
+      setTimeout(() => {
+        document.body.classList.remove('shake');
+      }, 5000);
+    }
+
+    // Trigger earthquake simulation after 10 seconds
+    setTimeout(simulateEarthquake, 10000);
+  </script>
+</body>
+</html>
